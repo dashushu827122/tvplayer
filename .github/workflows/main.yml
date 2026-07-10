@@ -28,13 +28,14 @@ jobs:
 
       - name: Build APK
         run: |
-          buildozer android debug 2>&1 | tee build.log
+          buildozer android_new debug 2>&1 | tee build.log
 
       - name: Check output
         if: always()
         run: |
-          find . -name "*.apk" 2>/dev/null
-          ls -la bin/ 2>/dev/null || echo "bin/ not found"
+          echo "=== Looking for APK ==="
+          find . -name "*.apk" -type f 2>/dev/null
+          ls -la bin/ 2>/dev/null || echo "No bin/"
 
       - name: Upload APK
         if: success()
