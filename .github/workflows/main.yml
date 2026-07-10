@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -21,21 +21,21 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq build-essential git unzip wget python3-pip >/dev/null 2>&1
+          sudo apt-get update
+          sudo apt-get install -y build-essential git unzip wget python3-pip python3-setuptools
           pip install --upgrade pip
           pip install buildozer cython
 
       - name: Build APK
         run: |
-          buildozer android_new debug 2>&1 | tee build.log
+          buildozer android debug 2>&1
+          echo "Exit: True"
 
-      - name: Check output
+      - name: Debug APK
         if: always()
         run: |
-          echo "=== Looking for APK ==="
-          find . -name "*.apk" -type f 2>/dev/null
-          ls -la bin/ 2>/dev/null || echo "No bin/"
+          find /home/runner -name "*.apk" -type f 2>/dev/null | head -10
+          ls -laR bin/ 2>/dev/null || echo "No bin/"
 
       - name: Upload APK
         if: success()
